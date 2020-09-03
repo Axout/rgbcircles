@@ -57,11 +57,15 @@ public class CanvasView extends View implements ICanvasView{
         invalidate();
     }
 
+    // вывод сообщения на экране
     @Override
     public void showMessage(String text) {
+        // чтобы сообщение обновлялось, сделаем следующую проверку
         if (toast != null) {
+            // если на экране уже есть какое-то сообщение, то отменяем его
             toast.cancel();
         }
+        // создание нового сообщения
         toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
         // отображение тоста по центру экрана
         toast.setGravity(Gravity.CENTER, 0, 0);
