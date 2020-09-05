@@ -1,11 +1,14 @@
 package ru.axout.rgbcircles;
 
+import android.graphics.Color;
+
 import java.util.ArrayList;
 
 public class GameManager {
     public static final int MAX_CIRCLES = 10;
     private MainCircle mainCircle;
     private ArrayList<EnemyCircle> circles;
+    private SuperCircle superCircle;
     private CanvasView canvasView;
     private static int width;
     private static int height;
@@ -14,10 +17,14 @@ public class GameManager {
         this.canvasView = canvasView;
         width = w; // к нестатическим полям некорректно обращаться через this
         height = h; // к нестатическим полям некорректно обращаться через this
+
+        // создаём круги
         initMainCircle();
         initEnemyCircles();
+        initSuperCircle();
     }
 
+    // создаём вражеские круги
     private void initEnemyCircles() {
         SimpleCircle mainCircleArea = mainCircle.getCircleArea();
         circles = new ArrayList<EnemyCircle>();
@@ -32,9 +39,9 @@ public class GameManager {
         calculateAndSetCirclesColor();
     }
 
+    // в зависимости от размера созданным кругам присваиваем роли: еда или враг
     private void calculateAndSetCirclesColor() {
-        for (EnemyCircle circle :
-                circles) {
+        for (EnemyCircle circle : circles) {
             circle.setEnemyOrFoodColorDependsOn(mainCircle);
         }
     }
@@ -47,11 +54,18 @@ public class GameManager {
         return height;
     }
 
+    // создаём главный круг
     private void initMainCircle() {
         // рисуем круг поцентру экрана
         mainCircle = new MainCircle(width / 2, height / 2);
     }
 
+    // создаём супер-кргу
+    private void initSuperCircle() {
+        superCircle = SuperCircle.getSuperCircle();
+    }
+
+    // рисуем круги
     public void onDraw() {
         // рисуем главный круг
         canvasView.drawCircle(mainCircle);
@@ -59,16 +73,19 @@ public class GameManager {
         for (EnemyCircle circle : circles) {
             canvasView.drawCircle(circle);
         }
+        // рисуем супер-кргу
+        if (superCircle != null) canvasView.drawCircle(superCircle);
     }
 
+    // управление главным кругом по косанию
     public void onTouchEvent(int x, int y) {
-        mainCircle.moveMainCircleWhenTouchAt(x, y);
-        // проверим пересечение с другими кругами
-        checkCollision();
-        moveCircles();
+        mainCircle.moveMainCircleWhenTouchAt(x, y); // двигаем главный круг
+        checkCollision(); // проверим пересечение с другими кругами
+        moveCircles(); // двиваем остальные круги
     }
 
     private void checkCollision() {
+        // проверка вражеских кругов
         SimpleCircle circleForDel = null; // для удаления съеденного круга
         for (EnemyCircle circle : circles) {
             // если главный круг пересёк другой, то конец игре
@@ -88,6 +105,14 @@ public class GameManager {
                 }
             }
         }
+        // проверка супер-круга
+        if (superCircle != null) {
+            if (mainCircle.isIntersect(superCircle)) {
+                superCircle = null;
+                mainCircle.setMainSpeed(50);
+                mainCircle.setColor(Color.CYAN);
+            }
+        }
         // после прохода и анализа всех кругов проверим:
         // если круг не null, то мы удалим данный круг
         if (circleForDel != null) {
@@ -103,16 +128,20 @@ public class GameManager {
     // и перерисовываем экран
     private void gameEnd(String text) {
         canvasView.showMessage(text);
-        mainCircle.initRadius();
+        mainCircle.updateMainCircle();
         initEnemyCircles();
+        initSuperCircle();
         canvasView.redraw();
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану
     // независимое перемещение требудет многопоточности
     private void moveCircles() {
+        // вражеские круги
         for (EnemyCircle circle : circles) {
             circle.moveOneStep();
         }
+        // супер круг
+        if (superCircle != null) superCircle.moveOneStep();
     }
 }
