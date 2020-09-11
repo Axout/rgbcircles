@@ -1,9 +1,9 @@
 package ru.axout.rgbcircles;
 
 public class SimpleCircle {
-    protected int x;
+    protected int x; // координаты кругов
     protected int y;
-    protected int radius;
+    protected int radius; // радиус круга
     private int color;
 
     public SimpleCircle(int x, int y, int radius) {

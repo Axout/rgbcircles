@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">rgbcircles</string>
+    <string name="go">Поехали</string>
+    <string name="todo">TODO</string>
 </resources>
