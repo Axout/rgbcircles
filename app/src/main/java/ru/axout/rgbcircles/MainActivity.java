@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE); // отключение заголовка (верхней плашки) у окна
 
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_main);
 
         buttonStart = findViewById(R.id.buttonStart);
 
@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
                 // выбор файла с xml-разметкой происходит с помощью метода setContentView(),
                 // где аргументом является константа, показывающая какой файл нужно взять из папки "res"
                 // название константы совпадает с именем файла рез расширения
-                setContentView(R.layout.activity_main);
+                setContentView(R.layout.activity_play);
             }
         });
     }
