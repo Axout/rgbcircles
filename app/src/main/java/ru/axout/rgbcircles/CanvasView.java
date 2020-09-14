@@ -15,6 +15,7 @@ public class CanvasView extends View implements ICanvasView{
     private Paint paint;
     private Canvas canvas;
     private Toast toast;
+    public static boolean toScoreActivity = false;
 
     public CanvasView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,6 +71,11 @@ public class CanvasView extends View implements ICanvasView{
         // отображение тоста по центру экрана
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    @Override
+    public void toScoreActivity() {
+        toScoreActivity = true;
     }
 
     // onTouchEvent - callback-метод, который будет вызван тогда,

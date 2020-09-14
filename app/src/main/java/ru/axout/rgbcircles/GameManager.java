@@ -12,6 +12,7 @@ public class GameManager {
     private CanvasView canvasView;
     private static int width;
     private static int height;
+    private User user;
 
     public GameManager(CanvasView canvasView, int w, int h) {
         this.canvasView = canvasView;
@@ -22,6 +23,7 @@ public class GameManager {
         initMainCircle();
         initEnemyCircles();
         initSuperCircle();
+        user = new User();
     }
 
     // создаём вражеские круги
@@ -32,7 +34,7 @@ public class GameManager {
             EnemyCircle circle;
             do {
                 circle = EnemyCircle.getRandomCircle();
-            } while (circle.isIntersect(mainCircleArea));
+            } while (circle.isIntersectOnInit(mainCircleArea));
             circles.add(circle);
         }
         // определим какой получился круг: враг или еда. И затем расскрасим.
@@ -94,13 +96,17 @@ public class GameManager {
                 if (circle.isSmallerThan(mainCircle)) {
                     // если круг меньшего радиуса, то "съедаем" его, увеличивая свой радиус на радиус съеденного
                     mainCircle.growRadius(circle);
+                    // увеличим счёт
+                    user.increaseScore(circle.radius);
                     // сохраним ссылку на тот круг, который хотим удалить
                     circleForDel = circle;
                     // вызовем переоценку всех цветов, потому, что наш размер теперь изменился
                     calculateAndSetCirclesColor();
                     break;
                 } else {
-                    gameEnd("Ааа!.. Тебя съели!");
+                    user.injury();
+                    //gameEnd("Ааа!.. Тебя съели!");
+                    gameEnd("Health: " + user.getHealth());
                     return;
                 }
             }
@@ -120,7 +126,8 @@ public class GameManager {
         }
         // положительный конец игры - если все круги съедены
         if (circles.isEmpty()) {
-            gameEnd("Да! Ты победил!");
+            //gameEnd("Да! Ты победил!");
+            gameEnd("Score: " + user.getScore());
         }
     }
 
@@ -128,10 +135,13 @@ public class GameManager {
     // и перерисовываем экран
     private void gameEnd(String text) {
         canvasView.showMessage(text);
-        mainCircle.updateMainCircle();
-        initEnemyCircles();
-        initSuperCircle();
-        canvasView.redraw();
+        if (user.getHealth() > 0) {
+            mainCircle.updateMainCircle();
+            initEnemyCircles();
+            initSuperCircle();
+            canvasView.redraw();
+        }
+        else canvasView.toScoreActivity();
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану

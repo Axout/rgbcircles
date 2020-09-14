@@ -37,8 +37,12 @@ public class SimpleCircle {
         return new SimpleCircle(x, y, radius * 3);
     }
 
-    // метод проверяет попал ли вражеский круг при создании в недоступную зону главного круга
+    // метод проверяет попал ли вражеский круг в зону главного круга
     public boolean isIntersect(SimpleCircle circle) {
         return radius + circle.radius >= Math.sqrt(Math.pow(x - circle.x, 2) + Math.pow(y - circle.y, 2));
+    }
+    // метод проверяет попал ли вражеский круг при создании в недоступную зону главного круга
+    public boolean isIntersectOnInit(SimpleCircle circle) {
+        return radius + circle.radius >= Math.sqrt(Math.pow(x - circle.x, 2) + Math.pow(y - circle.y, 2)) - 600;
     }
 }

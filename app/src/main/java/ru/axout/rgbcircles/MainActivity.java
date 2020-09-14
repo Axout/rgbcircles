@@ -1,6 +1,7 @@
 package ru.axout.rgbcircles;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.os.Bundle;
@@ -13,19 +14,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); // отключение заголовка (верхней плашки) у окна
-
+        // отключение заголовка (верхней плашки) у окна
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // выбор файла с xml-разметкой происходит с помощью метода setContentView(),
+        // где аргументом является константа, показывающая какой файл нужно взять из папки "res"
+        // название константы совпадает с именем файла рез расширения
         setContentView(R.layout.activity_main);
-
+        // для переключения между экранами, а также для передачи данных между экранами нужно использовать интент
+        final Intent intent = new Intent(this, PlayActivity.class);
         buttonStart = findViewById(R.id.buttonStart);
-
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // выбор файла с xml-разметкой происходит с помощью метода setContentView(),
-                // где аргументом является константа, показывающая какой файл нужно взять из папки "res"
-                // название константы совпадает с именем файла рез расширения
-                setContentView(R.layout.activity_play);
+                startActivity(intent);
             }
         });
     }
