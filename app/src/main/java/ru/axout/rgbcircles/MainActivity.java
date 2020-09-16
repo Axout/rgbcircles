@@ -7,9 +7,10 @@ import android.view.Window;
 import android.os.Bundle;
 import android.widget.Button;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener{
 
     Button buttonStart;
+    Button buttonScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +22,23 @@ public class MainActivity extends Activity {
         // название константы совпадает с именем файла рез расширения
         setContentView(R.layout.activity_main);
         // для переключения между экранами, а также для передачи данных между экранами нужно использовать интент
-        final Intent intent = new Intent(this, PlayActivity.class);
         buttonStart = findViewById(R.id.buttonStart);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buttonStart.setOnClickListener(this);
+        buttonScore = findViewById(R.id.buttonScore);
+        buttonScore.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buttonStart:
+                Intent intent = new Intent(this, PlayActivity.class);
                 startActivity(intent);
-            }
-        });
+                break;
+            case R.id.buttonScore:
+                Intent intent2 = new Intent(this, ScoreActivity.class);
+                startActivity(intent2);
+        }
+
     }
 }

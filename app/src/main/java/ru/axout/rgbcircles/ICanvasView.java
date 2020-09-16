@@ -15,5 +15,5 @@ public interface ICanvasView {
 
     void showMessage(String text);
 
-    void toScoreActivity();
+//    void toScoreActivity();
 }

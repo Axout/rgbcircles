@@ -1,7 +1,6 @@
 package ru.axout.rgbcircles;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
@@ -12,7 +11,7 @@ public class PlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        final Intent intent = new Intent(this, ScoreActivity.class);
-        if (CanvasView.toScoreActivity) startActivity(intent);
+//        final Intent intent = new Intent(this, ScoreActivity.class);
+//        if (CanvasView.toScoreActivity) startActivity(intent);
     }
 }

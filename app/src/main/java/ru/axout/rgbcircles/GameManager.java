@@ -1,10 +1,11 @@
 package ru.axout.rgbcircles;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
-
 import java.util.ArrayList;
 
-public class GameManager {
+public class GameManager extends Activity {
     public static final int MAX_CIRCLES = 10;
     private MainCircle mainCircle;
     private ArrayList<EnemyCircle> circles;
@@ -132,7 +133,7 @@ public class GameManager {
     }
 
     // в случае наступления "конца игры", заново создаём вражеские круги
-    // и перерисовываем экран
+    // и перерисовываем экран, либо переходим в итоговое активити
     private void gameEnd(String text) {
         canvasView.showMessage(text);
         if (user.getHealth() > 0) {
@@ -141,7 +142,12 @@ public class GameManager {
             initSuperCircle();
             canvasView.redraw();
         }
-        else canvasView.toScoreActivity();
+        else {
+//            canvasView.toScoreActivity();
+            Intent intent = new Intent(this, ScoreActivity.class);
+//            if (CanvasView.toScoreActivity) startActivity(intent);
+            startActivity(intent);
+        }
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану
