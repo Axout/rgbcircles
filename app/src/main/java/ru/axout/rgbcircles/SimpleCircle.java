@@ -24,6 +24,10 @@ public class SimpleCircle {
         return radius;
     }
 
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
     public void setColor(int color) {
         this.color = color;
     }

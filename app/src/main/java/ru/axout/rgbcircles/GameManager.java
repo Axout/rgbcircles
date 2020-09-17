@@ -1,5 +1,4 @@
 package ru.axout.rgbcircles;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,10 +9,10 @@ public class GameManager extends Activity {
     private MainCircle mainCircle;
     private ArrayList<EnemyCircle> circles;
     private SuperCircle superCircle;
-    private CanvasView canvasView;
+    private final CanvasView canvasView;
     private static int width;
     private static int height;
-    private User user;
+    private final User user;
 
     public GameManager(CanvasView canvasView, int w, int h) {
         this.canvasView = canvasView;
@@ -30,7 +29,7 @@ public class GameManager extends Activity {
     // создаём вражеские круги
     private void initEnemyCircles() {
         SimpleCircle mainCircleArea = mainCircle.getCircleArea();
-        circles = new ArrayList<EnemyCircle>();
+        circles = new ArrayList<>();
         for (int i = 0; i < MAX_CIRCLES; i++) {
             EnemyCircle circle;
             do {
@@ -38,8 +37,18 @@ public class GameManager extends Activity {
             } while (circle.isIntersectOnInit(mainCircleArea));
             circles.add(circle);
         }
+        correctionRandomCircles(circles);
         // определим какой получился круг: враг или еда. И затем расскрасим.
         calculateAndSetCirclesColor();
+    }
+
+    private void correctionRandomCircles(ArrayList<EnemyCircle> circles) {
+        int increasedRadius = mainCircle.radius;
+        for (EnemyCircle circle : circles) {
+            if (increasedRadius < circle.getRadius())
+                circle.setRadius(increasedRadius);
+            increasedRadius += circle.getRadius();
+        }
     }
 
     // в зависимости от размера созданным кругам присваиваем роли: еда или враг
@@ -144,9 +153,15 @@ public class GameManager extends Activity {
         }
         else {
 //            canvasView.toScoreActivity();
-            Intent intent = new Intent(this, ScoreActivity.class);
+//            Intent intent = new Intent(this, ScoreActivity.class);
 //            if (CanvasView.toScoreActivity) startActivity(intent);
-            startActivity(intent);
+//            startActivity(intent);
+//            PlayActivity playActivity = new PlayActivity();
+//            playActivity.toScoreActivity();
+            mainCircle.updateMainCircle();
+            initEnemyCircles();
+            initSuperCircle();
+            canvasView.redraw();
         }
     }
 
