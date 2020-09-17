@@ -1,5 +1,6 @@
 package ru.axout.rgbcircles;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -15,7 +16,6 @@ public class CanvasView extends View implements ICanvasView{
     private Paint paint;
     private Canvas canvas;
     private Toast toast;
-    //public static boolean toScoreActivity = false;
 
     public CanvasView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -73,13 +73,9 @@ public class CanvasView extends View implements ICanvasView{
         toast.show();
     }
 
-//    @Override
-//    public void toScoreActivity() {
-//        toScoreActivity = true;
-//    }
-
     // onTouchEvent - callback-метод, который будет вызван тогда,
     // когда палец будет прикоснён к экрану
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // узнаем координаты прикосновения к экрану

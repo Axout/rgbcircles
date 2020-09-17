@@ -1,11 +1,12 @@
 package ru.axout.rgbcircles;
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class GameManager extends Activity {
+public class GameManager {
     public static final int MAX_CIRCLES = 10;
+    public static final int SUPER_MAIN_SPEED = 80;
     private MainCircle mainCircle;
     private ArrayList<EnemyCircle> circles;
     private SuperCircle superCircle;
@@ -37,16 +38,30 @@ public class GameManager extends Activity {
             } while (circle.isIntersectOnInit(mainCircleArea));
             circles.add(circle);
         }
+        // корректируем радиусы кругов, чтобы всегда была возможность выйграть
         correctionRandomCircles(circles);
         // определим какой получился круг: враг или еда. И затем расскрасим.
         calculateAndSetCirclesColor();
     }
 
+    // корректируем радиусы кругов, чтобы всегда была возможность выйграть
     private void correctionRandomCircles(ArrayList<EnemyCircle> circles) {
         int increasedRadius = mainCircle.radius;
+
+        // сортируем варжеские круги по возрастанию
+        Collections.sort(circles, new Comparator<EnemyCircle>() {
+            @Override
+            public int compare(EnemyCircle o1, EnemyCircle o2) {
+                return Integer.compare(o2.radius, o1.radius);
+            }
+        });
+
+        // для каждого круга проверяем меньше ли его радиус радиуса главного круга
         for (EnemyCircle circle : circles) {
+            // если меньше (тупиковая ситуация), то уменьшаем радиус текущего вражеского круга
             if (increasedRadius < circle.getRadius())
-                circle.setRadius(increasedRadius);
+                circle.setRadius(increasedRadius - 1);
+            // а если нет, то идём дальше
             increasedRadius += circle.getRadius();
         }
     }
@@ -100,7 +115,7 @@ public class GameManager extends Activity {
         // проверка вражеских кругов
         SimpleCircle circleForDel = null; // для удаления съеденного круга
         for (EnemyCircle circle : circles) {
-            // если главный круг пересёк другой, то конец игре
+            // если главный круг пересёк другой, то:
             if (mainCircle.isIntersect(circle)) {
                 // по радиусу проверим - с каким кругом мы пересеклись
                 if (circle.isSmallerThan(mainCircle)) {
@@ -125,7 +140,7 @@ public class GameManager extends Activity {
         if (superCircle != null) {
             if (mainCircle.isIntersect(superCircle)) {
                 superCircle = null;
-                mainCircle.setMainSpeed(50);
+                mainCircle.setMainSpeed(SUPER_MAIN_SPEED);
                 mainCircle.setColor(Color.CYAN);
             }
         }
@@ -144,25 +159,16 @@ public class GameManager extends Activity {
     // в случае наступления "конца игры", заново создаём вражеские круги
     // и перерисовываем экран, либо переходим в итоговое активити
     private void gameEnd(String text) {
-        canvasView.showMessage(text);
-        if (user.getHealth() > 0) {
-            mainCircle.updateMainCircle();
-            initEnemyCircles();
-            initSuperCircle();
-            canvasView.redraw();
+        mainCircle.updateMainCircle();
+        initEnemyCircles();
+        initSuperCircle();
+        canvasView.redraw();
+        if (user.getHealth() <= 0) {
+            canvasView.showMessage("Your max score: " + user.getScore());
+            user.setScore(0);
+            user.setHealth(3);
         }
-        else {
-//            canvasView.toScoreActivity();
-//            Intent intent = new Intent(this, ScoreActivity.class);
-//            if (CanvasView.toScoreActivity) startActivity(intent);
-//            startActivity(intent);
-//            PlayActivity playActivity = new PlayActivity();
-//            playActivity.toScoreActivity();
-            mainCircle.updateMainCircle();
-            initEnemyCircles();
-            initSuperCircle();
-            canvasView.redraw();
-        }
+        else canvasView.showMessage(text);
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану

@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 public class MainCircle extends SimpleCircle{
     public static final int INIT_RADIUS = 50;
-    public static final int MAIN_SPEED = 30;
+    public static final int MAIN_SPEED = 50;
     public int mainSpeed = MAIN_SPEED;
     public static final int OUR_COLOR = Color.BLUE;
 
