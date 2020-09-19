@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">rgbcircles</string>
+    <string name="app_name">RGBcircles</string>
     <string name="go">Поехали</string>
     <string name="todo">TODO</string>
-    <string name="score">Score</string>
 </resources>

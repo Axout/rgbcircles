@@ -1,10 +1,11 @@
 package ru.axout.rgbcircles;
+import android.app.Activity;
 import android.graphics.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class GameManager {
+public class GameManager extends Activity {
     public static final int MAX_CIRCLES = 10;
     public static final int SUPER_MAIN_SPEED = 80;
     private MainCircle mainCircle;
@@ -60,7 +61,7 @@ public class GameManager {
         for (EnemyCircle circle : circles) {
             // если меньше (тупиковая ситуация), то уменьшаем радиус текущего вражеского круга
             if (increasedRadius < circle.getRadius())
-                circle.setRadius(increasedRadius - 1);
+                circle.setRadius(increasedRadius - 2);
             // а если нет, то идём дальше
             increasedRadius += circle.getRadius();
         }

@@ -11,18 +11,4 @@ public class PlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
     }
-
-//    Работа с логами:
-//
-//    private static final String TAG = "myLogs";
-//
-//    public void toScoreActivity() {
-//        try {
-//            Intent intent3 = new Intent(this, MainActivity.class);
-//            startActivity(intent3);
-//        } catch (Exception e) {
-//            Log.d(TAG, "Кощей", e);
-//            e.printStackTrace();
-//        }
-//    }
 }
