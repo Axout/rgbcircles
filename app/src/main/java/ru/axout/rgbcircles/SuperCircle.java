@@ -1,13 +1,12 @@
 package ru.axout.rgbcircles;
 
 import android.graphics.Color;
-
 import java.util.Random;
 
 public class SuperCircle extends EnemyCircle{
 
     public static final int SUPER_RADIUS = 10;
-    public static final int MAIN_SUPER_SPEED = 30;
+    public static final int SUPER_SPEED = 30;
     public static final int SUPER_COLOR = Color.MAGENTA;
 
     public SuperCircle(int x, int y, int radius, int dx, int dy) {
@@ -20,6 +19,6 @@ public class SuperCircle extends EnemyCircle{
         Random random = new Random();
         int x = random.nextInt(GameManager.getWidth());
         int y = random.nextInt(GameManager.getHeight());
-        return new SuperCircle(x, y, SUPER_RADIUS, MAIN_SUPER_SPEED, MAIN_SUPER_SPEED);
+        return new SuperCircle(x, y, SUPER_RADIUS, SUPER_SPEED, SUPER_SPEED);
     }
 }

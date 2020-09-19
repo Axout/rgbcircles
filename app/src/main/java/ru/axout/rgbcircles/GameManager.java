@@ -1,17 +1,20 @@
 package ru.axout.rgbcircles;
-
+import android.app.Activity;
 import android.graphics.Color;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class GameManager {
+public class GameManager extends Activity {
     public static final int MAX_CIRCLES = 10;
+    public static final int SUPER_MAIN_SPEED = 80;
     private MainCircle mainCircle;
     private ArrayList<EnemyCircle> circles;
     private SuperCircle superCircle;
-    private CanvasView canvasView;
+    private final CanvasView canvasView;
     private static int width;
     private static int height;
+    private final User user;
 
     public GameManager(CanvasView canvasView, int w, int h) {
         this.canvasView = canvasView;
@@ -22,21 +25,46 @@ public class GameManager {
         initMainCircle();
         initEnemyCircles();
         initSuperCircle();
+        user = new User();
     }
 
     // создаём вражеские круги
     private void initEnemyCircles() {
         SimpleCircle mainCircleArea = mainCircle.getCircleArea();
-        circles = new ArrayList<EnemyCircle>();
+        circles = new ArrayList<>();
         for (int i = 0; i < MAX_CIRCLES; i++) {
             EnemyCircle circle;
             do {
                 circle = EnemyCircle.getRandomCircle();
-            } while (circle.isIntersect(mainCircleArea));
+            } while (circle.isIntersectOnInit(mainCircleArea));
             circles.add(circle);
         }
+        // корректируем радиусы кругов, чтобы всегда была возможность выйграть
+        correctionRandomCircles(circles);
         // определим какой получился круг: враг или еда. И затем расскрасим.
         calculateAndSetCirclesColor();
+    }
+
+    // корректируем радиусы кругов, чтобы всегда была возможность выйграть
+    private void correctionRandomCircles(ArrayList<EnemyCircle> circles) {
+        int increasedRadius = mainCircle.radius;
+
+        // сортируем варжеские круги по возрастанию
+        Collections.sort(circles, new Comparator<EnemyCircle>() {
+            @Override
+            public int compare(EnemyCircle o1, EnemyCircle o2) {
+                return Integer.compare(o2.radius, o1.radius);
+            }
+        });
+
+        // для каждого круга проверяем меньше ли его радиус радиуса главного круга
+        for (EnemyCircle circle : circles) {
+            // если меньше (тупиковая ситуация), то уменьшаем радиус текущего вражеского круга
+            if (increasedRadius < circle.getRadius())
+                circle.setRadius(increasedRadius - 2);
+            // а если нет, то идём дальше
+            increasedRadius += circle.getRadius();
+        }
     }
 
     // в зависимости от размера созданным кругам присваиваем роли: еда или враг
@@ -88,19 +116,23 @@ public class GameManager {
         // проверка вражеских кругов
         SimpleCircle circleForDel = null; // для удаления съеденного круга
         for (EnemyCircle circle : circles) {
-            // если главный круг пересёк другой, то конец игре
+            // если главный круг пересёк другой, то:
             if (mainCircle.isIntersect(circle)) {
                 // по радиусу проверим - с каким кругом мы пересеклись
                 if (circle.isSmallerThan(mainCircle)) {
                     // если круг меньшего радиуса, то "съедаем" его, увеличивая свой радиус на радиус съеденного
                     mainCircle.growRadius(circle);
+                    // увеличим счёт
+                    user.increaseScore(circle.radius);
                     // сохраним ссылку на тот круг, который хотим удалить
                     circleForDel = circle;
                     // вызовем переоценку всех цветов, потому, что наш размер теперь изменился
                     calculateAndSetCirclesColor();
                     break;
                 } else {
-                    gameEnd("Ааа!.. Тебя съели!");
+                    user.injury();
+                    //gameEnd("Ааа!.. Тебя съели!");
+                    gameEnd("Health: " + user.getHealth());
                     return;
                 }
             }
@@ -109,7 +141,7 @@ public class GameManager {
         if (superCircle != null) {
             if (mainCircle.isIntersect(superCircle)) {
                 superCircle = null;
-                mainCircle.setMainSpeed(50);
+                mainCircle.setMainSpeed(SUPER_MAIN_SPEED);
                 mainCircle.setColor(Color.CYAN);
             }
         }
@@ -120,18 +152,24 @@ public class GameManager {
         }
         // положительный конец игры - если все круги съедены
         if (circles.isEmpty()) {
-            gameEnd("Да! Ты победил!");
+            //gameEnd("Да! Ты победил!");
+            gameEnd("Score: " + user.getScore());
         }
     }
 
     // в случае наступления "конца игры", заново создаём вражеские круги
-    // и перерисовываем экран
+    // и перерисовываем экран, либо переходим в итоговое активити
     private void gameEnd(String text) {
-        canvasView.showMessage(text);
         mainCircle.updateMainCircle();
         initEnemyCircles();
         initSuperCircle();
         canvasView.redraw();
+        if (user.getHealth() <= 0) {
+            canvasView.showMessage("Your max score: " + user.getScore());
+            user.setScore(0);
+            user.setHealth(3);
+        }
+        else canvasView.showMessage(text);
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану

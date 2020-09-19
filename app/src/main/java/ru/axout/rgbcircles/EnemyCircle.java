@@ -44,10 +44,7 @@ public class EnemyCircle extends SimpleCircle{
     }
 
     public boolean isSmallerThan(SimpleCircle circle) {
-        if (radius < circle.radius) {
-            return true;
-        }
-        return false;
+        return radius < circle.radius;
     }
 
     // метод двигающий круги на один шаг при косании пальцем экрана
