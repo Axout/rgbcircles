@@ -1,5 +1,6 @@
 package ru.axout.rgbcircles;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,16 +161,21 @@ public class GameManager extends Activity {
     // в случае наступления "конца игры", заново создаём вражеские круги
     // и перерисовываем экран, либо переходим в итоговое активити
     private void gameEnd(String text) {
-        mainCircle.updateMainCircle();
-        initEnemyCircles();
-        initSuperCircle();
-        canvasView.redraw();
         if (user.getHealth() <= 0) {
-            canvasView.showMessage("Your max score: " + user.getScore());
-            user.setScore(0);
-            user.setHealth(3);
+//            canvasView.showMessage("Your max score: " + user.getScore());
+//            user.setScore(0);
+//            user.setHealth(3);
+
+            Intent intent = new Intent(this, ScoreActivity.class);
+            startActivity(intent);
         }
-        else canvasView.showMessage(text);
+        else {
+            canvasView.showMessage(text);
+            mainCircle.updateMainCircle();
+            initEnemyCircles();
+            initSuperCircle();
+            canvasView.redraw();
+        }
     }
 
     // другие круги будут двигаться, но только при прикосновении к экрану
