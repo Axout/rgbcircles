@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class CanvasView extends View implements ICanvasView{
     private static int width;
     private static int height;
-    private GameManager gameManager;
+    private final GameManager gameManager;
     private Paint paint;
     private Canvas canvas;
     private Toast toast;
@@ -74,7 +74,7 @@ public class CanvasView extends View implements ICanvasView{
     }
 
     // onTouchEvent - callback-метод, который будет вызван тогда,
-    // когда палец будет прикоснён к экрану
+    // когда палец прикоснётся к экрану
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {

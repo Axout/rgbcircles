@@ -1,7 +1,6 @@
 package ru.axout.rgbcircles;
 
 import android.graphics.Color;
-
 import java.util.Random;
 
 public class EnemyCircle extends SimpleCircle{
@@ -29,8 +28,7 @@ public class EnemyCircle extends SimpleCircle{
         int dx = 1 + random.nextInt(RANDOM_SPEED);
         int dy = 1 + random.nextInt(RANDOM_SPEED);
         int radius = FROM_RADIUS + random.nextInt(TO_RADIUS - FROM_RADIUS);
-        EnemyCircle enemyCircle = new EnemyCircle(x, y, radius, dx, dy);
-        return enemyCircle;
+        return new EnemyCircle(x, y, radius, dx, dy);
     }
 
     // образовавшийся круг больше главного, то это вражеский.
@@ -47,15 +45,15 @@ public class EnemyCircle extends SimpleCircle{
         return radius < circle.radius;
     }
 
-    // метод двигающий круги на один шаг при косании пальцем экрана
+    // метод двигающий круги на один шаг при касании пальцем экрана
     public void moveOneStep() {
         x += dx;
         y += dy;
-        // чтобы вражеские круги отлетали от границ экрана
+        // отражение вражеских кругов от границ экрана
         checkBounds();
     }
 
-    // отражение от стенок
+    // отражение от границ экрана
     private void checkBounds() {
         if (x > GameManager.getWidth() || x < 0) {
             dx = -dx;
